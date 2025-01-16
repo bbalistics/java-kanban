@@ -11,6 +11,11 @@ public class Epic extends Task {
         super(name, description);
     }
 
+    @Override
+    public void setStatus(Status status) {
+
+    }
+
     public void setSubtaskList(ArrayList<Subtask> subtaskList) {
         this.subtaskList = subtaskList;
     }
