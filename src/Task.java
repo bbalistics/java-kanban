@@ -5,10 +5,10 @@ public class Task {
     private Status status;
 
     public Task(String name, String description, int id, Status status) {
-        this.name = name;
-        this.description = description;
-        this.id = id;
-        this.status = status;
+            this.name = name;
+            this.description = description;
+            this.id = id;
+            this.status = status;
     }
 
     public Task(String name, String description) {
@@ -31,14 +31,6 @@ public class Task {
 
     public Status getStatus() {
         return status;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public void setId(int id) {
