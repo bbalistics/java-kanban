@@ -55,6 +55,5 @@ public class Main {
         System.out.println(manager.getTaskList());
         System.out.println(manager.getEpicList());
         System.out.println(manager.getSubtasksList());
-
     }
 }

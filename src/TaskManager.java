@@ -7,10 +7,6 @@ public class TaskManager {
     private HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private int id = 1;
 
-    private int generateId() {
-        return id++;
-    }
-
     public ArrayList<Task> getTaskList() {
         return new ArrayList<>(tasks.values());
     }
@@ -46,6 +42,10 @@ public class TaskManager {
 
     public void deleteAllSubtasks() {
         subtasks.clear();
+
+        for (Epic epic : epics.values()) {
+            epic.setStatus(Status.NEW);
+        }
     }
 
     public void addTask(Task task) {
@@ -75,7 +75,9 @@ public class TaskManager {
         ArrayList<Integer> oldSubtasks = oldEpic.getSubtaskListId();
         if (!oldSubtasks.isEmpty()) {
             for (Integer subtaskId : oldEpic.getSubtaskListId()) {
-                subtasks.remove(subtaskId);
+                if (!epic.getSubtaskListId().contains(subtaskId)) {
+                    subtasks.remove(subtaskId);
+                }
             }
         }
 
@@ -113,6 +115,10 @@ public class TaskManager {
             epicsSubtasks.add(subtasks.get(subtaskId));
         }
         return epicsSubtasks;
+    }
+
+    private int generateId() {
+        return id++;
     }
 
     private void checkEpicStatus(Epic epic) {
