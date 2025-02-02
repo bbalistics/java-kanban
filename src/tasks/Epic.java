@@ -1,13 +1,17 @@
+package tasks;
+
+import enums.Status;
+
 import java.util.ArrayList;
 
 public class Epic extends Task {
     private ArrayList<Integer> subtaskListId = new ArrayList<>();
 
-    Epic(String name, String description, int id, Status status) {
+    public Epic(String name, String description, int id, Status status) {
         super(name, description, id, status);
     }
 
-    Epic(String name, String description) {
+    public Epic(String name, String description) {
         super(name, description);
     }
 
@@ -29,7 +33,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "tasks.Epic{" +
                 "name= " + getName() + '\'' +
                 ", description = " + getDescription() + '\'' +
                 ", id=" + getId() +

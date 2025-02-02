@@ -1,9 +1,14 @@
+package tests;
+
+import enums.Status;
+import managers.Managers;
+import managers.TaskManager;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tasks.Task;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
     private static TaskManager manager;
@@ -18,14 +23,14 @@ class InMemoryHistoryManagerTest {
         Task task = new Task("Вынеси мусор", "Возьми пакеты");
         manager.addTask(task);
         manager.getTaskById(1);
-        manager.updateTask(new Task("Бездельничай", "скорее", task.getId(),Status.NEW));
+        manager.updateTask(new Task("Бездельничай", "скорее", task.getId(), Status.NEW));
 
         List<Task> tasks = manager.getHistory();
         Task oldTask = tasks.getFirst();
 
-        assertEquals(task.getName(), oldTask.getName());
-        assertEquals(task.getStatus(), oldTask.getStatus());
-        assertEquals(task.getDescription(), oldTask.getDescription());
-        assertEquals(task.getId(), oldTask.getId());
+        Assertions.assertEquals(task.getName(), oldTask.getName());
+        Assertions.assertEquals(task.getStatus(), oldTask.getStatus());
+        Assertions.assertEquals(task.getDescription(), oldTask.getDescription());
+        Assertions.assertEquals(task.getId(), oldTask.getId());
     }
 }

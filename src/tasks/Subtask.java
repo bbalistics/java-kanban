@@ -1,3 +1,7 @@
+package tasks;
+
+import enums.Status;
+
 public class Subtask extends Task {
     private final int epicId;
 
@@ -6,7 +10,7 @@ public class Subtask extends Task {
         this.epicId = epicID;
     }
 
-    Subtask(String name, String description, int epicId) {
+    public Subtask(String name, String description, int epicId) {
         super(name, description);
         this.epicId = epicId;
     }
@@ -17,7 +21,7 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{" +
+        return "tasks.Subtask{" +
                 "name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", id=" + getId() +

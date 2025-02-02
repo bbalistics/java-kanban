@@ -1,3 +1,7 @@
+package tasks;
+
+import enums.Status;
+
 public class Task {
     private String name;
     private String description;
@@ -72,7 +76,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "tasks.Task{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
