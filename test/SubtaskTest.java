@@ -1,5 +1,3 @@
-package tests;
-
 import enums.Status;
 import org.junit.jupiter.api.Test;
 import tasks.Subtask;
