@@ -1,4 +1,4 @@
-package tests;
+package test;
 
 import enums.Status;
 import managers.InMemoryTaskManager;
