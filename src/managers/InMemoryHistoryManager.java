@@ -1,6 +1,6 @@
 package managers;
 
-import Other.Node;
+import other.Node;
 import tasks.Task;
 
 import java.util.ArrayList;

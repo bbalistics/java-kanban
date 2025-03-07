@@ -1,4 +1,4 @@
-package Other;
+package other;
 
 public class Node<T> {
     public T data;
