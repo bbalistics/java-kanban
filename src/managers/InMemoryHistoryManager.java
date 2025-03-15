@@ -1,6 +1,6 @@
 package managers;
 
-import other.Node;
+import nodes.Node;
 import tasks.Task;
 
 import java.util.ArrayList;
@@ -12,6 +12,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Map<Integer, Node<Task>> historyList = new HashMap<>();
     private Node<Task> head;
     private Node<Task> tail;
+
+    /**
+     * linkLast добавляет задачу в конец списка historyList:
+     * дублирует ссылку текущего последнего элемента (tail) в переменную oldTail, добавляет новый узел в конец списка,
+     * затем если head пуст, добавляет в него новый узел, в противном случае добавляет старому "хвосту" ссылку next на
+     * новый "хвост".
+     */
 
     public void linkLast(Task task) {
         Node<Task> oldTail = tail;
