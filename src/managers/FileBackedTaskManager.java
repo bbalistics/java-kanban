@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -76,7 +78,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         StringBuilder sb = new StringBuilder();
-        sb.append("id,type,name,status,description,epic\n");
+        sb.append("id,type,name,status,description,startTime,duration,epic\n");
 
         //Сохраняем задачи
         for (Task task : getTaskList()) {
@@ -85,6 +87,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     .append(task.getName()).append(",")
                     .append(task.getStatus()).append(",")
                     .append(task.getDescription()).append(",")
+                    .append(task.getStartTime()).append(",")
+                    .append(task.getDuration()).append(",")
                     .append("\n");
         }
 
@@ -95,6 +99,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     .append(epic.getName()).append(",")
                     .append(epic.getStatus()).append(",")
                     .append(epic.getDescription()).append(",")
+                    .append(epic.getStartTime()).append(",")
+                    .append(epic.getDuration()).append(",")
                     .append("\n");
         }
 
@@ -105,6 +111,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     .append(subtask.getName()).append(",")
                     .append(subtask.getStatus()).append(",")
                     .append(subtask.getDescription()).append(",")
+                    .append(subtask.getStartTime()).append(",")
+                    .append(subtask.getDuration()).append(",")
                     .append(subtask.getEpicId()).append("\n"); //Указываем epicId для подзадач
         }
 
@@ -131,11 +139,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     String name = parts[2].trim();
                     String status = parts[3].trim();
                     String description = parts[4].trim();
+                    LocalDateTime startTime = null;
+                    Duration duration = null;
+                    if (parts.length > 5 && !parts[5].equals("null")) { //Обрабатываем null-случай
+                        startTime = LocalDateTime.parse(parts[5].trim());
+                    }
+                    if (parts.length > 6 && !parts[6].equals("null")) {
+                        duration = Duration.parse(parts[6].trim());
+                    }
                     int epicId = -1; //Устанавливаем значение по умолчанию
 
                     //Проверяем, есть ли epicId
-                    if (parts.length > 5 && !parts[5].isEmpty()) {
-                        epicId = Integer.parseInt(parts[5].trim());
+                    if (parts.length > 7 && !parts[7].isEmpty()) {
+                        epicId = Integer.parseInt(parts[7].trim());
                     }
 
                     Status taskStatus = Status.valueOf(status);
@@ -143,7 +159,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     //Создаем задачи в зависимости от типа
                     switch (type) {
                         case "TASK":
-                            Task task = new Task(name, description, id, taskStatus);
+                            Task task = new Task(name, description, id, taskStatus,
+                                    startTime, duration);
                             manager.addTask(task);
                             break;
                         case "EPIC":
@@ -151,7 +168,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             manager.addEpic(epic);
                             break;
                         case "SUBTASK":
-                            Subtask subtask = new Subtask(name, description, id, taskStatus, epicId);
+                            Subtask subtask = new Subtask(name, description, id,
+                                    taskStatus, startTime, duration, epicId);
                             manager.addSubtask(subtask);
                             break;
                     }

@@ -1,24 +1,38 @@
 package tasks;
 
 import enums.Status;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Task {
     private String name;
     private String description;
     private int id;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
 
-    public Task(String name, String description, int id, Status status) {
+    public Task(String name, String description, int id, Status status, LocalDateTime startTime, Duration duration) {
             this.name = name;
             this.description = description;
             this.id = id;
             this.status = status;
+            this.startTime = startTime;
+            this.duration = duration;
     }
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
         status = Status.NEW;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     public String getName() {
@@ -37,6 +51,14 @@ public class Task {
         return status;
     }
 
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -51,6 +73,13 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime == null || duration == null) {
+            return null;
+        }
+        return startTime.plus(duration);
     }
 
     @Override
