@@ -31,6 +31,11 @@ public class Task {
         return duration;
     }
 
+    public String toCsvString() {
+        return String.format("%d,TASK,%s,%s,%s,%s,%s,%n",
+                id, name, status, description, startTime, duration);
+    }
+
     public LocalDateTime getStartTime() {
         return startTime;
     }

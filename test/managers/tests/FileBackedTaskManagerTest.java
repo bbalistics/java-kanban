@@ -31,7 +31,6 @@ public class FileBackedTaskManagerTest {
 
     @Test
     public void saveAndLoadEmptyFileTest() {
-        manager.save();
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
         assertTrue(loadedManager.getTaskList().isEmpty());

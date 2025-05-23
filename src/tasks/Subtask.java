@@ -19,6 +19,12 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
+    @Override
+    public String toCsvString() {
+        return String.format("%d,SUBTASK,%s,%s,%s,%s,%s,%d%n",
+                getId(), getName(), getStatus(), getDescription(), getStartTime(), getDuration(), epicId);
+    }
+
     public int getEpicId() {
         return epicId;
     }

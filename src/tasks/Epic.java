@@ -19,6 +19,11 @@ public class Epic extends Task {
         super(name, description);
     }
 
+    public String toCsvString() {
+        return String.format("%d,EPIC,%s,%s,%s,%s,%s,%n",
+                getId(), getName(), getStatus(), getDescription(), getStartTime(), getDuration());
+    }
+
     public void addSubtaskId(Subtask subtask) {
         subtaskListId.add(subtask.getId());
     }

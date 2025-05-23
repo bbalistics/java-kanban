@@ -76,53 +76,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    public void save() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("id,type,name,status,description,startTime,duration,epic\n");
-
-        //Сохраняем задачи
-        for (Task task : getTaskList()) {
-            sb.append(task.getId()).append(",")
-                    .append("TASK").append(",")
-                    .append(task.getName()).append(",")
-                    .append(task.getStatus()).append(",")
-                    .append(task.getDescription()).append(",")
-                    .append(task.getStartTime()).append(",")
-                    .append(task.getDuration()).append(",")
-                    .append("\n");
-        }
-
-        //Сохраняем эпики
-        for (Epic epic : getEpicList()) {
-            sb.append(epic.getId()).append(",")
-                    .append("EPIC").append(",")
-                    .append(epic.getName()).append(",")
-                    .append(epic.getStatus()).append(",")
-                    .append(epic.getDescription()).append(",")
-                    .append(epic.getStartTime()).append(",")
-                    .append(epic.getDuration()).append(",")
-                    .append("\n");
-        }
-
-        //Сохраняем подзадачи
-        for (Subtask subtask : getSubtasksList()) {
-            sb.append(subtask.getId()).append(",")
-                    .append("SUBTASK").append(",")
-                    .append(subtask.getName()).append(",")
-                    .append(subtask.getStatus()).append(",")
-                    .append(subtask.getDescription()).append(",")
-                    .append(subtask.getStartTime()).append(",")
-                    .append(subtask.getDuration()).append(",")
-                    .append(subtask.getEpicId()).append("\n"); //Указываем epicId для подзадач
-        }
-
-        try {
-            Files.writeString(file.toPath(), sb.toString(), StandardOpenOption.CREATE);
-        } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении данных", e);
-        }
-    }
-
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         try {
@@ -183,5 +136,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerSaveException("Ошибка при загрузке данных", e);
         }
         return manager;
+    }
+
+    private void save() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("id,type,name,status,description,startTime,duration,epic\n");
+
+        getTaskList().forEach(task -> sb.append(task.toCsvString()));
+        getEpicList().forEach(epic -> sb.append(epic.toCsvString()));
+        getSubtasksList().forEach(subtask -> sb.append(subtask.toCsvString()));
+
+        try {
+            Files.writeString(file.toPath(), sb.toString(), StandardOpenOption.CREATE);
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка при сохранении данных", e);
+        }
     }
 }
