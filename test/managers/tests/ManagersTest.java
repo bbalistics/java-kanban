@@ -1,4 +1,4 @@
-package tests;
+package managers.tests;
 
 import managers.InMemoryHistoryManager;
 import managers.InMemoryTaskManager;
@@ -16,7 +16,7 @@ class ManagersTest {
 
     @Test
     public void getDefaultHistory() {
-        assertInstanceOf(InMemoryHistoryManager.class, Managers.getDefaultHistory()
-                , "getDefaultHistory не работает.");
+        assertInstanceOf(InMemoryHistoryManager.class, Managers.getDefaultHistory(),
+                "getDefaultHistory не работает.");
     }
 }
