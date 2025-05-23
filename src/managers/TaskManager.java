@@ -7,8 +7,6 @@ import tasks.Task;
 import java.util.List;
 
 public interface TaskManager {
-    boolean isTasksOverlap(Task task1, Task task2);
-
     List<Task> getTaskList();
 
     List<Epic> getEpicList();
