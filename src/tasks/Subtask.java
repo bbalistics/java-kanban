@@ -2,27 +2,17 @@ package tasks;
 
 import enums.Status;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-
 public class Subtask extends Task {
     private final int epicId;
 
-    public Subtask(String name, String description, int id, Status status,
-                   LocalDateTime startTime, Duration duration, int epicID) {
-        super(name, description, id, status, startTime, duration);
+    public Subtask(String name, String description, int id, Status status, int epicID) {
+        super(name, description, id, status);
         this.epicId = epicID;
     }
 
     public Subtask(String name, String description, int epicId) {
         super(name, description);
         this.epicId = epicId;
-    }
-
-    @Override
-    public String toCsvString() {
-        return String.format("%d,SUBTASK,%s,%s,%s,%s,%s,%d%n",
-                getId(), getName(), getStatus(), getDescription(), getStartTime(), getDuration(), epicId);
     }
 
     public int getEpicId() {
