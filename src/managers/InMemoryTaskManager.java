@@ -1,6 +1,8 @@
 package managers;
 
 import enums.Status;
+import exeptions.NotFoundException;
+import exeptions.TaskOverlapException;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -34,20 +36,32 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(int id) {
-        historyManager.addTask(tasks.get(id));
-        return tasks.get(id);
+        Task task = tasks.get(id);
+        if (task == null) {
+            throw new NotFoundException("Task with id=" + id + " not found");
+        }
+        historyManager.addTask(task);
+        return task;
     }
 
     @Override
     public Epic getEpicById(int id) {
-        historyManager.addTask(epics.get(id));
-        return epics.get(id);
+        Epic epic = epics.get(id);
+        if (epic == null) {
+            throw new NotFoundException("Epic with id=" + id + " not found");
+        }
+        historyManager.addTask(epic);
+        return epic;
     }
 
     @Override
     public Subtask getSubtaskById(int id) {
-        historyManager.addTask(subtasks.get(id));
-        return subtasks.get(id);
+        Subtask subtask = subtasks.get(id);
+        if (subtask == null) {
+            throw new NotFoundException("Subtask with id=" + id + " not found");
+        }
+        historyManager.addTask(subtask);
+        return subtask;
     }
 
     @Override
@@ -91,15 +105,22 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addSubtask(Subtask subtask) {
         if (isTaskOverlappingWithExisting(subtask)) {
-            throw new IllegalStateException("Подзадача пересекается по времени с существующей");
+            throw new TaskOverlapException("Подзадача пересекается по времени с существующей");
         }
+
+        Epic epic = epics.get(subtask.getEpicId());
+        if (epic == null) {
+            throw new NotFoundException("Epic for subtask not found");
+        }
+
         subtask.setId(generateId());
         subtasks.put(subtask.getId(), subtask);
-        Epic epic = epics.get(subtask.getEpicId());
-        epic.addSubtaskId(subtask);
+        epic.addSubtaskId(subtask.getId());
+
         if (subtask.getStartTime() != null) {
             prioritizedTasks.add(subtask);
         }
+
         checkEpicStatus(epic);
         epic.updateTime(getEpicsSubtasks(epic));
     }
@@ -190,6 +211,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
+    }
+
+    @Override
+    public Set<Task> getPrioritizedTasks() {
+        return prioritizedTasks;
     }
 
     @Override

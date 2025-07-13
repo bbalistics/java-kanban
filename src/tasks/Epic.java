@@ -23,23 +23,33 @@ public class Epic extends Task {
         return String.format("%d,EPIC,%s,%s,%s,%s,%s,%n",
                 getId(), getName(), getStatus(), getDescription(), getStartTime(), getDuration());
     }
+    //Гарантированная инициализация списка, чтобы не выскакивал null при работе с subtaskListId
+    private void initSubtaskListIfNeeded() {
+        if (subtaskListId == null) {
+            subtaskListId = new ArrayList<>();
+        }
+    }
 
-    public void addSubtaskId(Subtask subtask) {
-        subtaskListId.add(subtask.getId());
+
+    public void addSubtaskId(int subtaskId) {
+        initSubtaskListIfNeeded();
+        subtaskListId.add(subtaskId);
+    }
+
+    public List<Integer> getSubtaskListId() {
+        initSubtaskListIfNeeded();
+        return new ArrayList<>(subtaskListId);
     }
 
     public void deleteSubtaskId(Integer id) {
+        initSubtaskListIfNeeded();
         subtaskListId.remove(id);
     }
 
     public void deleteAllSubtaskId() {
+        initSubtaskListIfNeeded();
         subtaskListId.clear();
     }
-
-    public ArrayList<Integer> getSubtaskListId() {
-        return subtaskListId;
-    }
-
     @Override
     public LocalDateTime getEndTime() {
         return endTime;
