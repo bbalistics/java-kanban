@@ -23,6 +23,7 @@ public class Epic extends Task {
         return String.format("%d,EPIC,%s,%s,%s,%s,%s,%n",
                 getId(), getName(), getStatus(), getDescription(), getStartTime(), getDuration());
     }
+
     //Гарантированная инициализация списка, чтобы не выскакивал null при работе с subtaskListId
     private void initSubtaskListIfNeeded() {
         if (subtaskListId == null) {
@@ -50,6 +51,7 @@ public class Epic extends Task {
         initSubtaskListIfNeeded();
         subtaskListId.clear();
     }
+
     @Override
     public LocalDateTime getEndTime() {
         return endTime;
