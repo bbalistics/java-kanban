@@ -68,29 +68,28 @@ public class Epic extends Task {
         long totalDuration = 0;
 
         for (Subtask subtask : allSubtasks) {
-            if (subtaskListId.contains(subtask.getId())) {
-                //Обновляем самое раннее время начала
-                if (subtask.getStartTime() != null) {
-                    if (earliestStart == null || subtask.getStartTime().isBefore(earliestStart)) {
-                        earliestStart = subtask.getStartTime();
-                    }
-                }
-
-                //Обновляем самое позднее время окончания
-                LocalDateTime subtaskEnd = subtask.getEndTime();
-                if (subtaskEnd != null) {
-                    if (latestEnd == null || subtaskEnd.isAfter(latestEnd)) {
-                        latestEnd = subtaskEnd;
-                    }
-                }
-
-                //Суммируем продолжительность
-                if (subtask.getDuration() != null) {
-                    totalDuration += subtask.getDuration().toMinutes();
-                }
+            if (!subtaskListId.contains(subtask.getId())) {
+                continue;
             }
+
+            //Обновление времени начала
+            LocalDateTime startTime = subtask.getStartTime();
+            if (startTime != null && (earliestStart == null || startTime.isBefore(earliestStart))) {
+                earliestStart = startTime;
+            }
+
+            //Обновление времени окончания
+            LocalDateTime endTime = subtask.getEndTime();
+            if (endTime != null && (latestEnd == null || endTime.isAfter(latestEnd))) {
+                latestEnd = endTime;
+            }
+
+            //Суммирование продолжительности
+            Duration duration = subtask.getDuration();
+            totalDuration += duration != null ? duration.toMinutes() : 0;
         }
 
+        //Установка итоговых значений
         setStartTime(earliestStart);
         setDuration(totalDuration > 0 ? Duration.ofMinutes(totalDuration) : null);
         this.endTime = latestEnd;

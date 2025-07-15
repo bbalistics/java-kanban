@@ -1,6 +1,7 @@
 package managers;
 
 import enums.Status;
+import parsing.TaskData;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -81,51 +82,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             List<String> lines = Files.readAllLines(file.toPath());
 
-            //Пропускаем заголовок и обрабатываем каждую строку
+            // Пропускаем заголовок и обрабатываем каждую строку
             for (int i = 1; i < lines.size(); i++) {
                 String line = lines.get(i);
-                String[] parts = line.split(",");
-
                 try {
-                    int id = Integer.parseInt(parts[0].trim());
-                    String type = parts[1].trim();
-                    String name = parts[2].trim();
-                    String status = parts[3].trim();
-                    String description = parts[4].trim();
-                    LocalDateTime startTime = null;
-                    Duration duration = null;
-                    if (parts.length > 5 && !parts[5].equals("null")) { //Обрабатываем null-случай
-                        startTime = LocalDateTime.parse(parts[5].trim());
-                    }
-                    if (parts.length > 6 && !parts[6].equals("null")) {
-                        duration = Duration.parse(parts[6].trim());
-                    }
-                    int epicId = -1; //Устанавливаем значение по умолчанию
-
-                    //Проверяем, есть ли epicId
-                    if (parts.length > 7 && !parts[7].isEmpty()) {
-                        epicId = Integer.parseInt(parts[7].trim());
-                    }
-
-                    Status taskStatus = Status.valueOf(status);
-
-                    //Создаем задачи в зависимости от типа
-                    switch (type) {
-                        case "TASK":
-                            Task task = new Task(name, description, id, taskStatus,
-                                    startTime, duration);
-                            manager.addTask(task);
-                            break;
-                        case "EPIC":
-                            Epic epic = new Epic(name, description, id, taskStatus);
-                            manager.addEpic(epic);
-                            break;
-                        case "SUBTASK":
-                            Subtask subtask = new Subtask(name, description, id,
-                                    taskStatus, startTime, duration, epicId);
-                            manager.addSubtask(subtask);
-                            break;
-                    }
+                    TaskData parsedData = TaskData.parseTaskLine(line);
+                    TaskData.createAndAddTask(manager, parsedData);
                 } catch (NumberFormatException e) {
                     throw new ManagerSaveException("Ошибка формата числа в данных", e);
                 } catch (IllegalArgumentException e) {

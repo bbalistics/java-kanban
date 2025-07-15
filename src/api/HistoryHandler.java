@@ -20,7 +20,7 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-                sendNotFound(exchange, "Only GET method is allowed");
+                sendMethodNotAllowed(exchange, "Only GET method is allowed");
                 return;
             }
 
