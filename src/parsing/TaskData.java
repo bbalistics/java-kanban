@@ -1,13 +1,8 @@
 package parsing;
 
-import enums.Status;
-import managers.FileBackedTaskManager;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
+import enums.Status;
 
 public class TaskData {
     private int id;
@@ -17,50 +12,69 @@ public class TaskData {
     private String description;
     private LocalDateTime startTime;
     private Duration duration;
-    private int epicId;
+    private int epicId = -1;
 
-    public static TaskData parseTaskLine(String line) {
-        String[] parts = line.split(",");
-
-        TaskData data = new TaskData();
-        data.id = Integer.parseInt(parts[0].trim());
-        data.type = parts[1].trim();
-        data.name = parts[2].trim();
-        data.status = Status.valueOf(parts[3].trim());
-        data.description = parts[4].trim();
-
-        if (parts.length > 5 && !parts[5].equals("null")) { //Обрабатываем null-случай
-            data.startTime = LocalDateTime.parse(parts[5].trim());
-        }
-
-        if (parts.length > 6 && !parts[6].equals("null")) {
-            data.duration = Duration.parse(parts[6].trim());
-        }
-
-        if (parts.length > 7 && !parts[7].isEmpty()) {
-            data.epicId = Integer.parseInt(parts[7].trim());
-        }
-
-        return data;
+    public int getId() {
+        return id;
     }
 
-    //Метод для создания и добавления задачи
-    public static void createAndAddTask(FileBackedTaskManager manager, TaskData data) {
-        switch (data.type) {
-            case "TASK":
-                Task task = new Task(data.name, data.description, data.id, data.status,
-                        data.startTime, data.duration);
-                manager.addTask(task);
-                break;
-            case "EPIC":
-                Epic epic = new Epic(data.name, data.description, data.id, data.status);
-                manager.addEpic(epic);
-                break;
-            case "SUBTASK":
-                Subtask subtask = new Subtask(data.name, data.description, data.id,
-                        data.status, data.startTime, data.duration, data.epicId);
-                manager.addSubtask(subtask);
-                break;
-        }
+    public String getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public int getEpicId() {
+        return epicId;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 }

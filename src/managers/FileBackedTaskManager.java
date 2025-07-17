@@ -1,6 +1,7 @@
 package managers;
 
 import parsing.TaskData;
+import parsing.TaskParser;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -83,8 +84,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             for (int i = 1; i < lines.size(); i++) {
                 String line = lines.get(i);
                 try {
-                    TaskData parsedData = TaskData.parseTaskLine(line);
-                    TaskData.createAndAddTask(manager, parsedData);
+                    TaskData parsedData = TaskParser.parseTaskLine(line);
+                    TaskParser.createAndAddTask(manager, parsedData);
                 } catch (NumberFormatException e) {
                     throw new ManagerSaveException("Ошибка формата числа в данных", e);
                 } catch (IllegalArgumentException e) {
