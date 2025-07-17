@@ -2,43 +2,116 @@ package tasks;
 
 import enums.Status;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
     private ArrayList<Integer> subtaskListId = new ArrayList<>();
+    private LocalDateTime endTime;
 
     public Epic(String name, String description, int id, Status status) {
-        super(name, description, id, status);
+        super(name, description, id, status, null, null);
     }
 
     public Epic(String name, String description) {
         super(name, description);
     }
 
-    public void addSubtaskId(Subtask subtask) {
-        subtaskListId.add(subtask.getId());
+    public String toCsvString() {
+        return String.format("%d,EPIC,%s,%s,%s,%s,%s,%n",
+                getId(), getName(), getStatus(), getDescription(), getStartTime(), getDuration());
+    }
+
+    //Гарантированная инициализация списка, чтобы не выскакивал null при работе с subtaskListId
+    private void initSubtaskListIfNeeded() {
+        if (subtaskListId == null) {
+            subtaskListId = new ArrayList<>();
+        }
+    }
+
+
+    public void addSubtaskId(int subtaskId) {
+        initSubtaskListIfNeeded();
+        subtaskListId.add(subtaskId);
+    }
+
+    public List<Integer> getSubtaskListId() {
+        initSubtaskListIfNeeded();
+        return new ArrayList<>(subtaskListId);
     }
 
     public void deleteSubtaskId(Integer id) {
+        initSubtaskListIfNeeded();
         subtaskListId.remove(id);
     }
 
     public void deleteAllSubtaskId() {
+        initSubtaskListIfNeeded();
         subtaskListId.clear();
     }
 
-    public ArrayList<Integer> getSubtaskListId() {
-        return subtaskListId;
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void updateTime(List<Subtask> allSubtasks) {
+        if (allSubtasks == null || allSubtasks.isEmpty() || subtaskListId.isEmpty()) {
+            resetTime();
+            return;
+        }
+
+        LocalDateTime earliestStart = null;
+        LocalDateTime latestEnd = null;
+        long totalDuration = 0;
+
+        for (Subtask subtask : allSubtasks) {
+            if (!subtaskListId.contains(subtask.getId())) {
+                continue;
+            }
+
+            //Обновление времени начала
+            LocalDateTime startTime = subtask.getStartTime();
+            if (startTime != null && (earliestStart == null || startTime.isBefore(earliestStart))) {
+                earliestStart = startTime;
+            }
+
+            //Обновление времени окончания
+            LocalDateTime endTime = subtask.getEndTime();
+            if (endTime != null && (latestEnd == null || endTime.isAfter(latestEnd))) {
+                latestEnd = endTime;
+            }
+
+            //Суммирование продолжительности
+            Duration duration = subtask.getDuration();
+            totalDuration += duration != null ? duration.toMinutes() : 0;
+        }
+
+        //Установка итоговых значений
+        setStartTime(earliestStart);
+        setDuration(totalDuration > 0 ? Duration.ofMinutes(totalDuration) : null);
+        this.endTime = latestEnd;
+    }
+
+    private void resetTime() {
+        setStartTime(null);
+        setDuration(null);
+        this.endTime = null;
     }
 
     @Override
     public String toString() {
-        return "tasks.Epic{" +
-                "name= " + getName() + '\'' +
-                ", description = " + getDescription() + '\'' +
-                ", id=" + getId() +
-                ", subtaskList.size = " + subtaskListId.size() +
-                ", status = " + getStatus() +
+        return "Epic{" +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", status=" + getStatus() +
+                ", startTime=" + getStartTime() +
+                ", duration=" + getDuration() +
+                ", endTime=" + endTime +
+                ", subtaskIds=" + subtaskListId +
                 '}';
     }
 }
+

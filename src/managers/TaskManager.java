@@ -5,8 +5,11 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
+    boolean isTasksOverlap(Task task1, Task task2);
+
     List<Task> getTaskList();
 
     List<Epic> getEpicList();
@@ -46,5 +49,7 @@ public interface TaskManager {
     List<Subtask> getEpicsSubtasks(Epic epic);
 
     List<Task> getHistory();
+
+    Set<Task> getPrioritizedTasks();
 }
 
